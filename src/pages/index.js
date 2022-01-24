@@ -132,6 +132,7 @@ export default function PaginaInicial() {
               Nome de usuário do github
             </Text>
 
+            {/* Campo de texto */}
             <TextField
               fullWidth
               textFieldColors={{
@@ -143,6 +144,8 @@ export default function PaginaInicial() {
                 },
               }}
             />
+            {/* Campo de texto */}
+
             <Button
               type="submit"
               label="Entrar"
@@ -160,7 +163,7 @@ export default function PaginaInicial() {
           {/* Photo Area */}
           <Box
             styleSheet={{
-              marginLeft:"32px",
+              marginLeft: "32px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -176,6 +179,8 @@ export default function PaginaInicial() {
           >
             <Image
               styleSheet={{
+                marginTop: "16px",
+
                 borderRadius: "50%",
                 marginBottom: "16px",
               }}
@@ -195,10 +200,10 @@ export default function PaginaInicial() {
             </Text>
           </Box>
           {/* Photo Area */}
-
+          {/* QRcode Area */}
           <Box
             styleSheet={{
-              marginLeft:"32px",
+              marginLeft: "32px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -214,6 +219,7 @@ export default function PaginaInicial() {
           >
             <Image
               styleSheet={{
+                marginTop: "16px",
                 borderRadius: "0%",
                 marginBottom: "16px",
               }}
@@ -232,6 +238,7 @@ export default function PaginaInicial() {
               Repositório da aplicação no Git
             </Text>
           </Box>
+          {/* QRcode Area */}
         </Box>
       </Box>
     </>
