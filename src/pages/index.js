@@ -67,7 +67,7 @@ export default function PaginaInicial() {
     updated_at: null
   };
 
-  const [username, setUsername] = useState("hyagohoudini");
+  const [username, setUsername] = useState("");
   const [user, setUser] = useState(defautlUser);
 
   useEffect(() => {
@@ -209,7 +209,7 @@ export default function PaginaInicial() {
             ) : (
               <Button
                 onClick={handleErrBtn}
-                label="Entrar"
+                label="Submit"
                 fullWidth
                 buttonColors={{
                   contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -289,11 +289,11 @@ export default function PaginaInicial() {
                   borderRadius: "10px",
                 }}
               >
-                Não tem uma conta?
+                Didn't have an account?
               </Text>
 
               <Button
-                label="Registrar no git"
+                label="Sign in"
                 onClick={handleGit}
                 fullWidth
                 buttonColors={{
