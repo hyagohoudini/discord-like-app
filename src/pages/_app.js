@@ -1,3 +1,5 @@
+import { Toaster } from "react-hot-toast";
+
 function GlobalStyle() {
   return (
     <style global jsx>{`
@@ -34,6 +36,11 @@ export default function MyApp({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <Component {...pageProps} />
+      <Toaster
+        toastOptions={{
+          style: { fontSize: "1.2rem" },
+        }}
+      />
     </>
   );
 }

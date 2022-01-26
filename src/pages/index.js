@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 
+import toast from "react-hot-toast";
+
 function Titulo(props) {
   const Tag = props.tag || "h1";
   return (
@@ -64,7 +66,7 @@ export default function PaginaInicial() {
     followers: 0,
     following: 0,
     created_at: null,
-    updated_at: null
+    updated_at: null,
   };
 
   const [username, setUsername] = useState("");
@@ -95,12 +97,29 @@ export default function PaginaInicial() {
     event.preventDefault();
     //Push pra outro endpoint
     // window.location.href = '/chat';
-    // localStorage.setItem("username", `${username}`);
+    localStorage.setItem("username", `${username}`);
+    toast(`Hey, ${username}!`, {
+      icon: "✅",
+      style: {
+        borderRadius: "10px",
+        backgroundColor: "rgba(33, 41, 49, 0.5)",
+        color: appConfig.theme.colors.neutrals["000"],
+      },
+    });
+
     roteamento.push("/chat");
   };
 
   const handleErrBtn = () => {
-    alert("Git user must exist");
+    //alert("Git user must exist");
+    toast("Git User must exist!", {
+      icon: "❌",
+      style: {
+        borderRadius: "10px",
+        backgroundColor: "rgba(33, 41, 49, 0.5)",
+        color: appConfig.theme.colors.neutrals["000"],
+      },
+    });
   };
 
   const handleGit = () => {
