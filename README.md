@@ -13,8 +13,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 ## Como executar o projeto
 
-Para executar o projeto você precisa ter o [Node.js](https://nodejs.dev) e o [Git](https://git-scm.com) instalados na sua maquina. Você também precisará de um editor de textos, eu utilizei o [VSCode](https://code.visualstudio.com).
-
 1. Clone esse repositório.
 
 ```
