@@ -1,234 +1,222 @@
-import { React, useEffect, useState } from "react";
 import Message from "components/message";
-import { Box, TextField, Text, Button } from "@skynexui/components";
+import { Box, Text, TextField, Button } from "@skynexui/components";
+import React, { useEffect, useState, useRef } from "react";
 import appConfig from "../../config.json";
+import toast from "react-hot-toast";
+import { Icon } from "@skynexui/components";
 
 export default function ChatPage() {
+  const messageDefault = {
+    id: null,
+    username: null,
+    time: null,
+    message: null,
+  };
+
   const [username, setUsername] = useState("");
+  const [mensagem, setMensagem] = useState("");
+  const [messageList, setMessageList] = useState([]);
 
   useEffect(() => {
-    // Perform localStorage action
     setUsername(localStorage.getItem("username"));
   }, []);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    if (event.target.value === undefined || event.target.value.length == 0) {
+      toast("Empty message!", {
+        icon: "💬",
+        style: {
+          borderRadius: "10px",
+          backgroundColor: "rgba(33, 41, 49, 0.5)",
+          color: appConfig.theme.colors.neutrals["000"],
+        },
+      });
+      return;
+    } else {
+      var showDate = new Date();
+      const now = showDate.toUTCString();
+
+      const aux = {
+        id: messageList.length+1,
+        username: username,
+        time: now.slice(5, -7),
+        message: event.target.value,
+      };
+      setMessageList([...messageList, aux, BotMessage(aux.message)]);
+      setMensagem("");
+    }
+  };
+
+  const BotMessage = (texto) => {
+    var showDate = new Date();
+    const now = showDate.toUTCString();
+
+    const bot = {
+      id: messageList.length+1,
+      username: "bot",
+      time: now.slice(5, -7),
+      message:
+        texto == "longa"
+          ? "Aqui tem uma mensagem muito grande que só existe para fins de teste e nada mais. Interessante é que funciona mesmo, curioso, não? kkk"
+          : 'Mensagem automatica de teste',
+    };
+
+    return bot;
+  };
+
+  const messageRef = useRef();
+
+  useEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+    }
+  }, [messageList]);
+
+  const goHome = () => {};
 
   return (
     <>
       <Box
         styleSheet={{
-          
-          width: "100%",
-          maxHeight: "100vh",
-          padding: "32px",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
+          justifyContent: "center",
           backgroundImage: `url(https://i.imgur.com/icxRhjX.jpeg)`,
+          backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundBlendMode: "multiply",
-          // backgroundColor: "rgba(33, 41, 49, 0.5)",
-          // boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
+          color: appConfig.theme.colors.neutrals["000"],
         }}
       >
         <Box
           styleSheet={{
-            width: "100%",
-            maxWidth: "50%",
-            minHeight: "400px",
-            borderRadius: "30px",
-            padding: "32px",
-            boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "left",
-            backgroundColor: "rgba(33, 41, 49)",
+            flex: 1,
+            boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
+            borderRadius: "30px",
+            backgroundColor: appConfig.theme.colors.neutrals[700],
+            height: "100%",
+            maxWidth: {
+              xl: "50%",
+              lg: "95%",
+              sm: "100%",
+            },
+            maxHeight: "75vh",
+            padding: "32px",
           }}
         >
+          <Header />
           <Box
             styleSheet={{
+              position: "relative",
+              display: "flex",
+              flex: 1,
+              height: "80%",
+              backgroundColor: appConfig.theme.colors.neutrals[600],
+              flexDirection: "column",
+              borderRadius: "0 0 30px 30px",
+              padding: "16px",
               overflowY: "scroll",
               scrollbarWidth: "none",
             }}
           >
-            <Message
-              time="25/01/2022"
-              flag="right"
-              username={username}
-              storage={username}
-              message={"sei l[a"}
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"hello"}
-              storage={username}
-              message={"teste de interface"}
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
-            <Message
-              time="25/01/2022"
-              flag="left"
-              username={"smylle3"}
-              storage={username}
-              message={
-                "aosid hsaod hasojd sahojd sahojdsaodsao aso aso saho saod saho jsahd oasj dasojd hasojd ashoj as jas "
-              }
-            />
+            {messageList.map((item) => {
+              return (
+                <>
+                  <Message
+                    id={item.id}
+                    flag={item.username === username}
+                    time={item.time}
+                    username={item.username}
+                    message={item.message}
+                  />
+                  <div id={item.id} ref={messageRef} />
+                </>
+              );
+            })}
           </Box>
 
           <Box
+            as="form"
+            onSubmit={handleSubmit}
             styleSheet={{
+              marginTop: "16px",
               display: "flex",
-              flexDirection: "row",
+              alignItems: "center",
             }}
           >
             <TextField
-              fullWidth
-              styleSheet={{
-                margin: "16px",
+              placeholder="Insira sua mensagem aqui..."
+              value={mensagem}
+              type="textarea"
+              onChange={(event) => {
+                setMensagem(event.target.value);
               }}
-              textFieldColors={{
-                neutral: {
-                  textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.neutrals[900],
-                  mainColorHighlight: appConfig.theme.colors.primary[500],
-                  backgroundColor: appConfig.theme.colors.neutrals[800],
-                },
+              onKeyPress={(event) => {
+                if (event.key === "Enter") {
+                  BotMessage(event);
+                  handleSubmit(event);
+                }
+              }}
+              styleSheet={{
+                width: "100%",
+                border: "0",
+                resize: "none",
+                borderRadius: "10px",
+                padding: "6px 8px",
+                backgroundColor: appConfig.theme.colors.neutrals[800],
+                color: appConfig.theme.colors.neutrals[200],
               }}
             />
-            <Text
+            <Button
+              type="submit"
+              variant="primary"
+              colorVariant="positive"
+              label={<Icon />}
               styleSheet={{
-                margin: "16px",
-                fontSize: "30px",
-                fontWeight: "700",
+                marginLeft: "16px",
+                width: "20%",
+                height: "50%",
+                resize: "none",
+                borderRadius: "30px",
+                padding: "6px 8px",
               }}
-            >
-              😀
-            </Text>
+            />
           </Box>
         </Box>
-        <Button
-        label='Sair'
-          onClick={function handleBtn() {
-            localStorage.getItem("username");
-            window.location.href = "/";
-          }}
-          buttonColors={{
-            contrastColor: appConfig.theme.colors.neutrals["000"],
-            mainColor: appConfig.theme.colors.primary[500],
-            mainColorLight: appConfig.theme.colors.primary[400],
-            mainColorStrong: appConfig.theme.colors.primary[600],
-          }}
-        />
       </Box>
     </>
+  );
+}
+
+function Header() {
+  return (
+    <Box
+      styleSheet={{
+        width: "100%",
+        marginBottom: "16px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Text variant="heading5">Chat</Text>
+      <Button
+        onClick={() => {
+          navigate.push("/");
+          localStorage.removeItem(username);
+        }}
+        variant="secondary"
+        colorVariant="negative"
+        label="Logout"
+        href="/"
+      />
+    </Box>
   );
 }

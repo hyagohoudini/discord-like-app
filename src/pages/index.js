@@ -82,7 +82,20 @@ export default function PaginaInicial() {
         }
       })
       .catch((err) => {
-        setUser(defautlUser);
+        console.log(err.response.data.message);
+        if (err.response.data.message == "Not Found") {
+          setUser(defautlUser);
+          return;
+        }
+
+        toast("Git API rate limit exceeded!", {
+          icon: "☁️",
+          style: {
+            borderRadius: "10px",
+            backgroundColor: "rgba(33, 41, 49, 0.5)",
+            color: appConfig.theme.colors.neutrals["000"],
+          },
+        });
         return;
       });
   }, [username]);
@@ -95,6 +108,12 @@ export default function PaginaInicial() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (user.login == null) {
+      handleErrBtn();
+      return;
+    }
+
     //Push pra outro endpoint
     // window.location.href = '/chat';
     localStorage.setItem("username", `${username}`);
@@ -152,7 +171,7 @@ export default function PaginaInicial() {
             width: "100%",
             maxWidth: "1000px",
             minHeight: "400px",
-            borderRadius: "30px",
+            borderRadius: "30px 100px 30px 100px",
             padding: "32px",
             margin: "16px",
             boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
@@ -185,6 +204,7 @@ export default function PaginaInicial() {
             </Text>
 
             <Text
+              tag="h5"
               variant="body5"
               styleSheet={{
                 marginBottom: "1px",
@@ -192,12 +212,13 @@ export default function PaginaInicial() {
                 color: appConfig.theme.colors.neutrals["300"],
               }}
             >
-              Insert your GitHub Username
+              Log In to connect with friends and the world around you
             </Text>
 
             {/* Campo de texto */}
             <TextField
               fullWidth
+              placeholder="Insert your GitHub Username"
               value={username}
               onChange={handleChange}
               textFieldColors={{
@@ -216,7 +237,7 @@ export default function PaginaInicial() {
             {user.login != null ? (
               <Button
                 type="submit"
-                label="Entrar"
+                label="Log In"
                 fullWidth
                 buttonColors={{
                   contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -276,7 +297,7 @@ export default function PaginaInicial() {
                   borderRadius: "1000px",
                 }}
               >
-                {username}
+                {user.name || username}
               </Text>
             </Box>
           ) : (
@@ -338,7 +359,7 @@ export default function PaginaInicial() {
               backgroundColor: appConfig.theme.colors.neutrals[800],
               border: "1px solid",
               borderColor: appConfig.theme.colors.neutrals[999],
-              borderRadius: "10px",
+              borderRadius: "30px 70px 30px 70px",
               flex: 1,
               minHeight: "240px",
             }}
