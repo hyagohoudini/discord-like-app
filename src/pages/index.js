@@ -76,19 +76,14 @@ export default function PaginaInicial() {
 
   const roteador =  useRouter();
 
-  const [username, setUsername] = useState("");
-  const [profilePic, setProfilePic] = useState("");
-  const [email, setEmail] = useState("");
-
   const handleGoogleLogin = (event) => {
+    console.log(event)
     const {
-      profileObj: { name, imageUrl, email },
+      profileObj: { name, imageUrl, email, givenName},
     } = event;
 
-    setUsername(name);
-    setProfilePic(imageUrl);
-    setEmail(email);
-    localStorage.setItem("username",name);
+    localStorage.setItem("username",givenName);
+    localStorage.setItem("name", name);
     localStorage.setItem("profilePic",imageUrl);
     localStorage.setItem("email",email);
     roteador.push('/chat');
@@ -185,7 +180,7 @@ export default function PaginaInicial() {
                   variant="primary"
                   colorVariant="positive"
                   styleSheet={{
-                    fontSize: "0px",
+                    marginTop:'16px',
                   }}
                 />
               )}

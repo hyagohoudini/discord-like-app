@@ -208,7 +208,7 @@ export default function ChatPage() {
                   <>
                     <Message
                       id={item.id}
-                      flag={item.from === username}
+                      flag={item.profile_pic === profilePic}
                       time={now.slice(0, -7)}
                       username={item.from}
                       message={item.message}
@@ -340,7 +340,10 @@ function Header() {
       <Text variant="heading5">Chat</Text>
       <Button
         onClick={() => {
-          localStorage.removeItem("user");
+          localStorage.deleteItem("username");
+          localStorage.deleteItem("name");
+          localStorage.deleteItem("profilePic");
+          localStorage.deleteItem("email");
           roteador.push("/");
         }}
         variant="secondary"

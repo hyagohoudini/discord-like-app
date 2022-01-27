@@ -1,5 +1,4 @@
 import { Box } from "@skynexui/components";
-import NotFound404 from 'assets/img/404.jpg'
 
 export default function NotFound() {
   return (

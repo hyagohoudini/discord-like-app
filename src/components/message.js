@@ -78,7 +78,7 @@ export default function Message(prop) {
                     boxSizing: "content-box",
                   }}
                 >
-                  <Profile />
+                  <Profile username={prop.username} profilePic={prop.image}/>
                   <Button
                     onClick={() => toast.dismiss(t.id)}
                     variant="primary"
@@ -86,8 +86,7 @@ export default function Message(prop) {
                     label="Close"
                     styleSheet={{
                       width: "100%",
-                      height: "50%",
-                      resize: "none",
+                      height: "30%",
                       borderRadius: "30px",
                     }}
                   >

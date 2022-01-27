@@ -1,4 +1,7 @@
-export default function Profile() {
+import { Box, Image, Text } from "@skynexui/components";
+import appConfig from "../../config.json";
+
+export default function Profile(prop) {
   return (
     <>
       <Box
@@ -22,7 +25,7 @@ export default function Profile() {
             borderRadius: "50%",
             marginBottom: "16px",
           }}
-          src={profilePic}
+          src={prop.profilePic}
         />
 
         <Text
@@ -34,7 +37,7 @@ export default function Profile() {
             borderRadius: "1000px",
           }}
         >
-          {username}
+          {prop.username}
         </Text>
       </Box>
     </>
