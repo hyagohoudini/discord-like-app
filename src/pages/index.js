@@ -6,6 +6,8 @@ import axios from "axios";
 
 import toast from "react-hot-toast";
 
+const googleClientId =
+  "485319426986-8qtcsemp60bica3c8nq8vh57g5ofqo4r.apps.googleusercontent.com";
 
 import GoogleLogin from "react-google-login";
 
@@ -72,85 +74,34 @@ export default function PaginaInicial() {
     updated_at: null,
   };
 
+  const roteador =  useRouter();
+
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(defautlUser);
-  const [login, setLogin] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+  const [email, setEmail] = useState("");
 
-  useEffect(() => {
-    axios
-      .get(`https://api.github.com/users/${username}`)
-      .then((response) => {
-        const data = response.data;
-        if (data.login != null) {
-          setUser(data);
-        }
-      })
-      .catch((err) => {
-        console.log(err.response.data.message);
-        if (err.response.data.message == "Not Found") {
-          setUser(defautlUser);
-          return;
-        }
+  const handleGoogleLogin = (event) => {
+    const {
+      profileObj: { name, imageUrl, email },
+    } = event;
 
-        toast("Git API rate limit exceeded!", {
-          icon: "☁️",
-          style: {
-            borderRadius: "10px",
-            backgroundColor: "rgba(33, 41, 49, 0.5)",
-            color: appConfig.theme.colors.neutrals["000"],
-          },
-        });
-        return;
-      });
-  }, [username]);
-
-  const roteamento = useRouter();
-
-  const handleChange = (event) => {
-    setLogin(event.target.value);
+    setUsername(name);
+    setProfilePic(imageUrl);
+    setEmail(email);
+    localStorage.setItem("username",name);
+    localStorage.setItem("profilePic",imageUrl);
+    localStorage.setItem("email",email);
+    roteador.push('/chat');
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    if (user.login == null) {
-      handleErrBtn();
-      return;
-    }
-
-    //Push pra outro endpoint
-    // window.location.href = '/chat';
-    localStorage.setItem("username", `${username}`);
-    toast(`Hey, ${username}!`, {
-      icon: "✅",
+  const handleGoogleLoginFailure = () => {
+    toast.error("Google Login Error!", {
       style: {
         borderRadius: "10px",
         backgroundColor: "rgba(33, 41, 49, 0.5)",
         color: appConfig.theme.colors.neutrals["000"],
       },
     });
-
-    roteamento.push("/chat");
-  };
-
-  const handleErrBtn = () => {
-    //alert("Git user must exist");
-    setUsername(login);
-    if (user.username == null) {
-      setLogin("");
-      toast("Git User must exist!", {
-        icon: "❌",
-        style: {
-          borderRadius: "10px",
-          backgroundColor: "rgba(33, 41, 49, 0.5)",
-          color: appConfig.theme.colors.neutrals["000"],
-        },
-      });
-    }
-  };
-
-  const handleGit = () => {
-    window.location.href = "https://github.com/signup?source=login";
   };
 
   return (
@@ -160,7 +111,6 @@ export default function PaginaInicial() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          // backgroundColor: appConfig.theme.colors.primary[000],
           backgroundImage: `url(https://img.wallpapersafari.com/desktop/1920/1080/23/30/IpcZNP.jpg)`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
@@ -189,7 +139,6 @@ export default function PaginaInicial() {
           {/* Formulário */}
           <Box
             as="form"
-            onSubmit={handleSubmit}
             styleSheet={{
               display: "flex",
               flexDirection: "column",
@@ -222,155 +171,91 @@ export default function PaginaInicial() {
             >
               Log In to connect with friends and the world around you
             </Text>
-
-            {/* Campo de texto */}
-            {user.login != null ? (
-              <TextField
-                disabled
-                fullWidth
-                placeholder="Insert your GitHub Username"
-                value={login}
-                onChange={handleChange}
-                textFieldColors={{
-                  neutral: {
-                    textColor: appConfig.theme.colors.neutrals[200],
-                    mainColor: appConfig.theme.colors.neutrals[900],
-                    mainColorHighlight: appConfig.theme.colors.primary[500],
-                    backgroundColor: appConfig.theme.colors.neutrals[800],
-                  },
-                }}
-              />
-            ) : (
-              <TextField
-                fullWidth
-                placeholder="Insert your GitHub Username"
-                value={login}
-                onChange={handleChange}
-                textFieldColors={{
-                  neutral: {
-                    textColor: appConfig.theme.colors.neutrals[200],
-                    mainColor: appConfig.theme.colors.neutrals[900],
-                    mainColorHighlight: appConfig.theme.colors.primary[500],
-                    backgroundColor: appConfig.theme.colors.neutrals[800],
-                  },
-                }}
-              />
-            )}
-            {/* Campo de texto */}
-
-            {/* <input type="text" value = {username} onChange={handleChange} /> */}
-
-            {user.login != null ? (
-              <Button
-                type="submit"
-                label="Log In"
-                fullWidth
-                buttonColors={{
-                  contrastColor: appConfig.theme.colors.neutrals["000"],
-                  mainColor: appConfig.theme.colors.primary[500],
-                  mainColorLight: appConfig.theme.colors.primary[400],
-                  mainColorStrong: appConfig.theme.colors.primary[600],
-                }}
-              />
-            ) : (
-              <Button
-                onClick={handleErrBtn}
-                label="Submit"
-                fullWidth
-                buttonColors={{
-                  contrastColor: appConfig.theme.colors.neutrals["000"],
-                  mainColor: appConfig.theme.colors.neutrals[500],
-                  mainColorLight: appConfig.theme.colors.neutrals[400],
-                  mainColorStrong: appConfig.theme.colors.neutrals[600],
-                }}
-              />
-            )}
+            <GoogleLogin
+              clientId={googleClientId}
+              buttonText="Login with Google"
+              onSuccess={handleGoogleLogin}
+              onFailure={handleGoogleLoginFailure}
+              render={(renderProps) => (
+                <Button
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                  label="Login with google"
+                  fullWidth
+                  variant="primary"
+                  colorVariant="positive"
+                  styleSheet={{
+                    fontSize: "0px",
+                  }}
+                />
+              )}
+            />
           </Box>
           {/* Formulário */}
 
           {/* Photo Area */}
-          {user.login != null ? (
-            <Box
+
+          <Box
+            styleSheet={{
+              marginLeft: "32px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              maxWidth: "200px",
+              padding: "16px",
+              backgroundColor: appConfig.theme.colors.neutrals[800],
+              border: "1px solid",
+              borderColor: appConfig.theme.colors.neutrals[999],
+              borderRadius: "10px",
+              flex: 1,
+              minHeight: "240px",
+            }}
+          >
+            <Text
+              variant="body2"
               styleSheet={{
-                marginLeft: "32px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                maxWidth: "200px",
-                padding: "16px",
-                backgroundColor: appConfig.theme.colors.neutrals[800],
-                border: "1px solid",
-                borderColor: appConfig.theme.colors.neutrals[999],
+                marginTop: "0px",
+                marginBottom: "auto",
+                fontSize: "25px",
+                color: appConfig.theme.colors.neutrals[200],
+                backgroundColor: appConfig.theme.colors.neutrals[900],
+                padding: "3px 10px",
                 borderRadius: "10px",
-                flex: 1,
-                minHeight: "240px",
               }}
             >
-              <Image
-                styleSheet={{
-                  borderRadius: "50%",
-                  marginBottom: "16px",
-                }}
-                src={`https://github.com/${username}.png`}
-              />
+              Didn't have an account?
+            </Text>
 
-              <Text
-                variant="body4"
-                styleSheet={{
-                  color: appConfig.theme.colors.neutrals[200],
-                  backgroundColor: appConfig.theme.colors.neutrals[900],
-                  padding: "3px 10px",
-                  borderRadius: "1000px",
-                }}
-              >
-                {user.name || username}
-              </Text>
-            </Box>
-          ) : (
-            <Box
-              styleSheet={{
-                marginLeft: "32px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                maxWidth: "200px",
-                padding: "16px",
-                backgroundColor: appConfig.theme.colors.neutrals[800],
-                border: "1px solid",
-                borderColor: appConfig.theme.colors.neutrals[999],
-                borderRadius: "10px",
-                flex: 1,
-                minHeight: "240px",
+            <Button
+              label="Git Sign in"
+              variant="secondary"
+              href="https://github.com/signup?source=login"
+              fullWidth
+              buttonColors={{
+                contrastColor: appConfig.theme.colors.neutrals["000"],
+                mainColor: appConfig.theme.colors.primary[500],
+                mainColorLight: appConfig.theme.colors.primary[400],
+                mainColorStrong: appConfig.theme.colors.primary[600],
               }}
-            >
-              <Text
-                variant="body2"
-                styleSheet={{
-                  marginTop: "20px",
-                  marginBottom: "45px",
-                  fontSize: "25px",
-                  color: appConfig.theme.colors.neutrals[200],
-                  backgroundColor: appConfig.theme.colors.neutrals[900],
-                  padding: "3px 10px",
-                  borderRadius: "10px",
-                }}
-              >
-                Didn't have an account?
-              </Text>
+              styleSheet={{
+                marginTop: "-32px",
+                marginBottom: "16px",
+              }}
+            />
 
-              <Button
-                label="Sign in"
-                onClick={handleGit}
-                fullWidth
-                buttonColors={{
-                  contrastColor: appConfig.theme.colors.neutrals["000"],
-                  mainColor: appConfig.theme.colors.primary[500],
-                  mainColorLight: appConfig.theme.colors.primary[400],
-                  mainColorStrong: appConfig.theme.colors.primary[600],
-                }}
-              />
-            </Box>
-          )}
+            <Button
+              label="Google Sign in"
+              variant="secondary"
+              href="https://accounts.google.com/signup/v2/webcreateaccount?continue=https%3A%2F%2Faccounts.google.com%2FManageAccount%3Fnc%3D1&dsh=S939595820%3A1643303845417443&biz=false&flowName=GlifWebSignIn&flowEntry=SignUp"
+              fullWidth
+              buttonColors={{
+                contrastColor: appConfig.theme.colors.neutrals["000"],
+                mainColor: appConfig.theme.colors.primary["500"],
+                mainColorLight: appConfig.theme.colors.primary["400"],
+                mainColorStrong: appConfig.theme.colors.primary["600"],
+              }}
+            />
+          </Box>
           {/* Photo Area */}
 
           {/* QRcode Area */}
@@ -388,10 +273,6 @@ export default function PaginaInicial() {
               borderRadius: "30px 60px 30px 70px",
               flex: 1,
               minHeight: "240px",
-              marginTop: {
-                xs: "0px",
-                sm: "16px",
-              },
             }}
           >
             <Image

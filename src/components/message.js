@@ -107,7 +107,7 @@ export default function Message(prop) {
             maxWidth: "60px",
             borderRadius: "50%",
           }}
-          src={`https://github.com/${prop.username}.png`}
+          src={prop.image}
         />
         {/* Nome */}
       </Box>

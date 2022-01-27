@@ -5,6 +5,7 @@ import appConfig from "../../config.json";
 import toast from "react-hot-toast";
 import { Icon } from "@skynexui/components";
 import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
 
 const SUPABASE_ANON_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4ODMyNCwiZXhwIjoxOTU4ODY0MzI0fQ.-Mph-QdVaozJZPBjqQWwjbEJdqoZWiUHtjE2vRKhbMI";
@@ -12,20 +13,15 @@ const SUPABASE_URL = "https://iozweagevcivjyuunexw.supabase.co";
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
-  // const messageDefault = {
-  //   id: null,
-  //   username: null,
-  //   time: null,
-  //   message: null,
-  // };
-
   const [username, setUsername] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [didMount, setDidMount] = useState(false);
+  const [profilePic, setProfilePic] = useState();
 
   useEffect(() => {
     setUsername(localStorage.getItem("username"));
+    setProfilePic(localStorage.getItem("profilePic"));
   }, []);
 
   useEffect(() => {
@@ -115,6 +111,7 @@ export default function ChatPage() {
     const aux = {
       from: username,
       message: mensagem,
+      profile_pic: profilePic,
     };
 
     supabaseClient
@@ -215,8 +212,9 @@ export default function ChatPage() {
                       time={now.slice(0, -7)}
                       username={item.from}
                       message={item.message}
+                      image={item.profile_pic}
                     />
-                    <div id={item.id} ref={messageRef} />
+                    <div ref={messageRef} />
                   </>
                 );
               })
@@ -281,7 +279,6 @@ export default function ChatPage() {
               value={mensagem}
               type="textarea"
               onChange={(event) => {
-                // console.log(event.target.value);
                 setMensagem(event.target.value);
               }}
               // fim onChange
@@ -329,6 +326,7 @@ export default function ChatPage() {
 }
 
 function Header() {
+  const roteador = useRouter();
   return (
     <Box
       styleSheet={{
@@ -342,8 +340,8 @@ function Header() {
       <Text variant="heading5">Chat</Text>
       <Button
         onClick={() => {
-          localStorage.removeItem("username");
-          navigate.push("/");
+          localStorage.removeItem("user");
+          roteador.push("/");
         }}
         variant="secondary"
         colorVariant="negative"
