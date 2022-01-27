@@ -6,6 +6,9 @@ import axios from "axios";
 
 import toast from "react-hot-toast";
 
+
+import GoogleLogin from "react-google-login";
+
 function Titulo(props) {
   const Tag = props.tag || "h1";
   return (
@@ -71,6 +74,7 @@ export default function PaginaInicial() {
 
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(defautlUser);
+  const [login, setLogin] = useState("");
 
   useEffect(() => {
     axios
@@ -103,7 +107,7 @@ export default function PaginaInicial() {
   const roteamento = useRouter();
 
   const handleChange = (event) => {
-    setUsername(event.target.value);
+    setLogin(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -131,14 +135,18 @@ export default function PaginaInicial() {
 
   const handleErrBtn = () => {
     //alert("Git user must exist");
-    toast("Git User must exist!", {
-      icon: "❌",
-      style: {
-        borderRadius: "10px",
-        backgroundColor: "rgba(33, 41, 49, 0.5)",
-        color: appConfig.theme.colors.neutrals["000"],
-      },
-    });
+    setUsername(login);
+    if (user.username == null) {
+      setLogin("");
+      toast("Git User must exist!", {
+        icon: "❌",
+        style: {
+          borderRadius: "10px",
+          backgroundColor: "rgba(33, 41, 49, 0.5)",
+          color: appConfig.theme.colors.neutrals["000"],
+        },
+      });
+    }
   };
 
   const handleGit = () => {
@@ -216,20 +224,38 @@ export default function PaginaInicial() {
             </Text>
 
             {/* Campo de texto */}
-            <TextField
-              fullWidth
-              placeholder="Insert your GitHub Username"
-              value={username}
-              onChange={handleChange}
-              textFieldColors={{
-                neutral: {
-                  textColor: appConfig.theme.colors.neutrals[200],
-                  mainColor: appConfig.theme.colors.neutrals[900],
-                  mainColorHighlight: appConfig.theme.colors.primary[500],
-                  backgroundColor: appConfig.theme.colors.neutrals[800],
-                },
-              }}
-            />
+            {user.login != null ? (
+              <TextField
+                disabled
+                fullWidth
+                placeholder="Insert your GitHub Username"
+                value={login}
+                onChange={handleChange}
+                textFieldColors={{
+                  neutral: {
+                    textColor: appConfig.theme.colors.neutrals[200],
+                    mainColor: appConfig.theme.colors.neutrals[900],
+                    mainColorHighlight: appConfig.theme.colors.primary[500],
+                    backgroundColor: appConfig.theme.colors.neutrals[800],
+                  },
+                }}
+              />
+            ) : (
+              <TextField
+                fullWidth
+                placeholder="Insert your GitHub Username"
+                value={login}
+                onChange={handleChange}
+                textFieldColors={{
+                  neutral: {
+                    textColor: appConfig.theme.colors.neutrals[200],
+                    mainColor: appConfig.theme.colors.neutrals[900],
+                    mainColorHighlight: appConfig.theme.colors.primary[500],
+                    backgroundColor: appConfig.theme.colors.neutrals[800],
+                  },
+                }}
+              />
+            )}
             {/* Campo de texto */}
 
             {/* <input type="text" value = {username} onChange={handleChange} /> */}
@@ -359,9 +385,13 @@ export default function PaginaInicial() {
               backgroundColor: appConfig.theme.colors.neutrals[800],
               border: "1px solid",
               borderColor: appConfig.theme.colors.neutrals[999],
-              borderRadius: "30px 70px 30px 70px",
+              borderRadius: "30px 60px 30px 70px",
               flex: 1,
               minHeight: "240px",
+              marginTop: {
+                xs: "0px",
+                sm: "16px",
+              },
             }}
           >
             <Image

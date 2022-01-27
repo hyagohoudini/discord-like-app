@@ -3,10 +3,44 @@ import toast from "react-hot-toast";
 import appConfig from "../../config.json";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useState } from "react";
+import Profile from "./profile";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4ODMyNCwiZXhwIjoxOTU4ODY0MzI0fQ.-Mph-QdVaozJZPBjqQWwjbEJdqoZWiUHtjE2vRKhbMI";
+const SUPABASE_URL = "https://iozweagevcivjyuunexw.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function Message(prop) {
   const flag = prop.flag;
   const [fakeDelete, setFakeDelete] = useState(false);
+
+  const deleteMessage = () => {
+    supabaseClient
+      .from("tb_messageList")
+      .delete()
+      .match({ id: prop.id })
+      .then(() => {
+        toast("Erased!", {
+          icon: <Icon name="FaTrash" />,
+          style: {
+            borderRadius: "10px",
+            backgroundColor: "rgba(33, 41, 49, 0.5)",
+            color: appConfig.theme.colors.neutrals["000"],
+          },
+        });
+      })
+      .catch(() => {
+        toast("ERROr!", {
+          icon: <Icon name="❌" />,
+          style: {
+            borderRadius: "10px",
+            backgroundColor: "rgba(33, 41, 49, 0.5)",
+            color: appConfig.theme.colors.neutrals["000"],
+          },
+        });
+      });
+  };
 
   return (
     <Box
@@ -35,6 +69,37 @@ export default function Message(prop) {
         }}
       >
         <Image
+          onClick={() => {
+            toast(
+              (t) => (
+                <Box
+                  styleSheet={{
+                    margin: "10px 16px 16px 16px",
+                    boxSizing: "content-box",
+                  }}
+                >
+                  <Profile />
+                  <Button
+                    onClick={() => toast.dismiss(t.id)}
+                    variant="primary"
+                    colorVariant="dark"
+                    label="Close"
+                    styleSheet={{
+                      width: "100%",
+                      height: "50%",
+                      resize: "none",
+                      borderRadius: "30px",
+                    }}
+                  >
+                    Close
+                  </Button>
+                </Box>
+              ),
+              {
+                position: "top-left",
+              }
+            );
+          }}
           styleSheet={{
             maxWidth: "60px",
             minWidth: "60px",
@@ -95,6 +160,7 @@ export default function Message(prop) {
             <Button
               onClick={() => {
                 setFakeDelete(true);
+                deleteMessage();
               }}
               variant="tertiary"
               colorVariant="dark"

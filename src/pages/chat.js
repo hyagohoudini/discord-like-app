@@ -4,21 +4,38 @@ import React, { useEffect, useState, useRef } from "react";
 import appConfig from "../../config.json";
 import toast from "react-hot-toast";
 import { Icon } from "@skynexui/components";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_ANON_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4ODMyNCwiZXhwIjoxOTU4ODY0MzI0fQ.-Mph-QdVaozJZPBjqQWwjbEJdqoZWiUHtjE2vRKhbMI";
+const SUPABASE_URL = "https://iozweagevcivjyuunexw.supabase.co";
+const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
-  const messageDefault = {
-    id: null,
-    username: null,
-    time: null,
-    message: null,
-  };
+  // const messageDefault = {
+  //   id: null,
+  //   username: null,
+  //   time: null,
+  //   message: null,
+  // };
 
   const [username, setUsername] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [messageList, setMessageList] = useState([]);
+  const [didMount, setDidMount] = useState(false);
 
   useEffect(() => {
     setUsername(localStorage.getItem("username"));
+  }, []);
+
+  useEffect(() => {
+    supabaseClient
+      .from("tb_messageList")
+      .select("*")
+      .then(({ data }) => {
+        setMessageList(data);
+        setDidMount(true);
+      });
   }, []);
 
   // const handleSubmit = (event, mensagem) => {
@@ -49,19 +66,64 @@ export default function ChatPage() {
   //   }
   // };
 
-  const handleSubmit = () => {
-    var showDate = new Date();
-    const now = showDate.toUTCString();
+  // const handleSubmit = () => {
+  // if (mensagem.length === 0) {
+  // toast("Empty message!", {
+  // icon: "💬",
+  // style: {
+  // borderRadius: "10px",
+  // backgroundColor: "rgba(33, 41, 49, 0.5)",
+  // color: appConfig.theme.colors.neutrals["000"],
+  // },
+  // });
+  // return;
+  // } else {
+  // var showDate = new Date();
+  // const now = showDate.toUTCString();
+  //
+  // const aux = {
+  // id: messageList.length + 1,
+  // username: username,
+  // time: now.slice(5, -7),
+  // message: mensagem,
+  // };
+  // }
+  //
+  //setMessageList([...messageList, aux, BotMessage(aux.message)]);
+  //
+  // setMensagem("");
+  // };
+  //
 
+  const handleSubmit = () => {
+    if (mensagem.length === 0) {
+      toast("Empty message!", {
+        icon: "💬",
+        style: {
+          borderRadius: "10px",
+          backgroundColor: "rgba(33, 41, 49, 0.5)",
+          color: appConfig.theme.colors.neutrals["000"],
+        },
+      });
+      return;
+    }
+    mandaProBack();
+    setMensagem("");
+  };
+
+  const mandaProBack = () => {
     const aux = {
-      id: messageList.length + 1,
-      username: username,
-      time: now.slice(5, -7),
+      from: username,
       message: mensagem,
     };
 
-    setMessageList([...messageList, aux, BotMessage(aux.message)]);
-    setMensagem("");
+    supabaseClient
+      .from("tb_messageList")
+      .insert([aux])
+      .order("created_at", { ascending: true })
+      .then(({ data }) => {
+        setMessageList([...messageList, data[0]]);
+      });
   };
 
   const BotMessage = (texto) => {
@@ -140,20 +202,70 @@ export default function ChatPage() {
               scrollbarWidth: "none",
             }}
           >
-            {messageList.map((item) => {
-              return (
-                <>
-                  <Message
-                    id={item.id}
-                    flag={item.username === username}
-                    time={item.time}
-                    username={item.username}
-                    message={item.message}
-                  />
-                  <div id={item.id} ref={messageRef} />
-                </>
-              );
-            })}
+            {didMount ? (
+              messageList.map((item) => {
+                var showDate = new Date(item.created_at);
+                const now = showDate.toUTCString();
+
+                return (
+                  <>
+                    <Message
+                      id={item.id}
+                      flag={item.from === username}
+                      time={now.slice(0, -7)}
+                      username={item.from}
+                      message={item.message}
+                    />
+                    <div id={item.id} ref={messageRef} />
+                  </>
+                );
+              })
+            ) : (
+              <>
+                <Message
+                  id={"0"}
+                  flag={false}
+                  time={"now"}
+                  username={"bot"}
+                  message={"We are searching for your messages"}
+                />
+                <Message
+                  id={"0"}
+                  flag={true}
+                  time={"now"}
+                  username={"bot"}
+                  message={"Wait and relax"}
+                />
+                <Message
+                  id={"0"}
+                  flag={false}
+                  time={"now"}
+                  username={"bot"}
+                  message={"Wow! That's a lot of them"}
+                />
+                <Message
+                  id={"0"}
+                  flag={true}
+                  time={"now"}
+                  username={"bot"}
+                  message={"*Searching*"}
+                />
+                <Message
+                  id={"0"}
+                  flag={false}
+                  time={"now"}
+                  username={"bot"}
+                  message={"Don't we found it?"}
+                />
+                <Message
+                  id={"0"}
+                  flag={true}
+                  time={"now"}
+                  username={"bot"}
+                  message={"Is it really that difficult to find???"}
+                />
+              </>
+            )}
           </Box>
 
           <Box
@@ -165,7 +277,7 @@ export default function ChatPage() {
             }}
           >
             <TextField
-              placeholder="Insira sua mensagem aqui..."
+              placeholder="Type your message here..."
               value={mensagem}
               type="textarea"
               onChange={(event) => {
@@ -175,8 +287,8 @@ export default function ChatPage() {
               // fim onChange
               onKeyPress={(event) => {
                 if (event.key === "Enter") {
-                  BotMessage(event);
-                  handleSubmit(event);
+                  event.preventDefault();
+                  handleSubmit();
                 }
               }}
               // fim onKeyPress
@@ -185,7 +297,7 @@ export default function ChatPage() {
                 border: "0",
                 resize: "none",
                 borderRadius: "10px",
-                padding: "6px 8px",
+                padding: "16px 16px 0px 16px",
                 backgroundColor: appConfig.theme.colors.neutrals[800],
                 color: appConfig.theme.colors.neutrals[200],
               }}
@@ -230,8 +342,8 @@ function Header() {
       <Text variant="heading5">Chat</Text>
       <Button
         onClick={() => {
+          localStorage.removeItem("username");
           navigate.push("/");
-          localStorage.removeItem(username);
         }}
         variant="secondary"
         colorVariant="negative"
