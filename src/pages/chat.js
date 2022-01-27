@@ -21,31 +21,47 @@ export default function ChatPage() {
     setUsername(localStorage.getItem("username"));
   }, []);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (event.target.value === undefined || event.target.value.length == 0) {
-      toast("Empty message!", {
-        icon: "💬",
-        style: {
-          borderRadius: "10px",
-          backgroundColor: "rgba(33, 41, 49, 0.5)",
-          color: appConfig.theme.colors.neutrals["000"],
-        },
-      });
-      return;
-    } else {
-      var showDate = new Date();
-      const now = showDate.toUTCString();
+  // const handleSubmit = (event, mensagem) => {
+  //   console.log(event.target.value);
+  //   event.preventDefault();
+  //   if (event.target.value === undefined || event.target.value.length == 0 || mensagem.length === 0) {
+  //     toast("Empty message!", {
+  //       icon: "💬",
+  //       style: {
+  //         borderRadius: "10px",
+  //         backgroundColor: "rgba(33, 41, 49, 0.5)",
+  //         color: appConfig.theme.colors.neutrals["000"],
+  //       },
+  //     });
+  //     return;
+  //   } else {
+  //     var showDate = new Date();
+  //     const now = showDate.toUTCString();
 
-      const aux = {
-        id: messageList.length+1,
-        username: username,
-        time: now.slice(5, -7),
-        message: event.target.value,
-      };
-      setMessageList([...messageList, aux, BotMessage(aux.message)]);
-      setMensagem("");
-    }
+  //     const aux = {
+  //       id: messageList.length + 1,
+  //       username: username,
+  //       time: now.slice(5, -7),
+  //       message: mensagem,
+  //     };
+  //     setMessageList([...messageList, aux, BotMessage(aux.message)]);
+  //     setMensagem("");
+  //   }
+  // };
+
+  const handleSubmit = () => {
+    var showDate = new Date();
+    const now = showDate.toUTCString();
+
+    const aux = {
+      id: messageList.length + 1,
+      username: username,
+      time: now.slice(5, -7),
+      message: mensagem,
+    };
+
+    setMessageList([...messageList, aux, BotMessage(aux.message)]);
+    setMensagem("");
   };
 
   const BotMessage = (texto) => {
@@ -53,13 +69,13 @@ export default function ChatPage() {
     const now = showDate.toUTCString();
 
     const bot = {
-      id: messageList.length+1,
+      id: messageList.length + 1,
       username: "bot",
       time: now.slice(5, -7),
       message:
         texto == "longa"
           ? "Aqui tem uma mensagem muito grande que só existe para fins de teste e nada mais. Interessante é que funciona mesmo, curioso, não? kkk"
-          : 'Mensagem automatica de teste',
+          : "Mensagem automatica de teste",
     };
 
     return bot;
@@ -76,8 +92,6 @@ export default function ChatPage() {
       });
     }
   }, [messageList]);
-
-  const goHome = () => {};
 
   return (
     <>
@@ -144,7 +158,6 @@ export default function ChatPage() {
 
           <Box
             as="form"
-            onSubmit={handleSubmit}
             styleSheet={{
               marginTop: "16px",
               display: "flex",
@@ -156,14 +169,17 @@ export default function ChatPage() {
               value={mensagem}
               type="textarea"
               onChange={(event) => {
+                // console.log(event.target.value);
                 setMensagem(event.target.value);
               }}
+              // fim onChange
               onKeyPress={(event) => {
                 if (event.key === "Enter") {
                   BotMessage(event);
                   handleSubmit(event);
                 }
               }}
+              // fim onKeyPress
               styleSheet={{
                 width: "100%",
                 border: "0",
@@ -174,8 +190,13 @@ export default function ChatPage() {
                 color: appConfig.theme.colors.neutrals[200],
               }}
             />
+
             <Button
               type="submit"
+              onClick={(event) => {
+                event.preventDefault();
+                handleSubmit();
+              }}
               variant="primary"
               colorVariant="positive"
               label={<Icon />}

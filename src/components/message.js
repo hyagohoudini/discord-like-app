@@ -20,7 +20,8 @@ export default function Message(prop) {
         boxSizing: "border-box",
         backgroundColor: "rgba(82, 102, 122, 0.9)",
         boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
-        borderRadius: "30px",
+        borderRadius: flag ? "30px 3px 30px 30px" : "3px 30px 30px 30px",
+
         hover: {
           backgroundColor: appConfig.theme.colors.neutrals["300"],
         },
@@ -87,7 +88,7 @@ export default function Message(prop) {
           </Box>
           <Box
             styleSheet={{
-              display: flag ? 'flex':'none',
+              display: flag ? "flex" : "none",
               marginBottom: "-15px",
             }}
           >
