@@ -89,7 +89,8 @@ export default function PaginaInicial() {
     roteador.push('/chat');
   };
 
-  const handleGoogleLoginFailure = () => {
+  const handleGoogleLoginFailure = (event) => {
+    console.log(event)
     toast.error("Google Login Error!", {
       style: {
         borderRadius: "10px",
