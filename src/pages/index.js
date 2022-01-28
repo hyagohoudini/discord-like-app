@@ -1,15 +1,18 @@
-import { Box, Button, Text, TextField, Image } from "@skynexui/components";
+import {
+  Box,
+  Button,
+  Text,
+  TextField,
+  Image,
+  Icon,
+} from "@skynexui/components";
 import appConfig from "../../config.json";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
 
 import toast from "react-hot-toast";
 
-const googleClientId =
-  "485319426986-8qtcsemp60bica3c8nq8vh57g5ofqo4r.apps.googleusercontent.com";
-
-import GoogleLogin from "react-google-login";
+import { useAuth } from "hooks/useAuth";
 
 function Titulo(props) {
   const Tag = props.tag || "h1";
@@ -27,78 +30,10 @@ function Titulo(props) {
   );
 }
 
-// function HomePage() {
-//   return (
-//     <>
-//       <GlobalStyle />
-//       <Titulo tag="h1">Welcome Back</Titulo>
-//       <h2>Discord like app</h2>
-//     </>
-//   );
-// }
-// export default HomePage;
+export default function HomePage() {
+  const roteador = useRouter();
 
-export default function PaginaInicial() {
-  const defautlUser = {
-    login: null,
-    id: 0,
-    node_id: null,
-    avatar_url: null,
-    gravatar_id: null,
-    url: null,
-    html_url: null,
-    followers_url: null,
-    following_url: null,
-    gists_url: null,
-    starred_url: null,
-    subscriptions_url: null,
-    organizations_url: null,
-    repos_url: null,
-    events_url: null,
-    received_events_url: null,
-    type: "User",
-    site_admin: false,
-    name: null,
-    company: null,
-    blog: null,
-    location: null,
-    email: null,
-    hireable: null,
-    bio: null,
-    twitter_username: null,
-    public_repos: 0,
-    public_gists: 0,
-    followers: 0,
-    following: 0,
-    created_at: null,
-    updated_at: null,
-  };
-
-  const roteador =  useRouter();
-
-  const handleGoogleLogin = (event) => {
-    console.log(event)
-    const {
-      profileObj: { name, imageUrl, email, givenName},
-    } = event;
-
-    localStorage.setItem("username",givenName);
-    localStorage.setItem("name", name);
-    localStorage.setItem("profilePic",imageUrl);
-    localStorage.setItem("email",email);
-    roteador.push('/chat');
-  };
-
-  const handleGoogleLoginFailure = (event) => {
-    console.log(event)
-    toast.error("Google Login Error!", {
-      style: {
-        borderRadius: "10px",
-        backgroundColor: "rgba(33, 41, 49, 0.5)",
-        color: appConfig.theme.colors.neutrals["000"],
-      },
-    });
-  };
+  const { user, SignInWithGoogle, SignInWithGithub } = useAuth();
 
   return (
     <>
@@ -149,7 +84,7 @@ export default function PaginaInicial() {
             <Text
               variant="body3"
               styleSheet={{
-                marginBottom: "32px",
+                marginBottom: "16px",
                 color: appConfig.theme.colors.primary[500],
               }}
             >
@@ -167,25 +102,56 @@ export default function PaginaInicial() {
             >
               Log In to connect with friends and the world around you
             </Text>
-            <GoogleLogin
-              clientId={googleClientId}
-              buttonText="Login with Google"
-              onSuccess={handleGoogleLogin}
-              onFailure={handleGoogleLoginFailure}
-              render={(renderProps) => (
-                <Button
-                  onClick={renderProps.onClick}
-                  disabled={renderProps.disabled}
-                  label="Login with google"
-                  fullWidth
-                  variant="primary"
-                  colorVariant="positive"
-                  styleSheet={{
-                    marginTop:'16px',
-                  }}
-                />
-              )}
-            />
+
+            {/* <button onClick={() => handleLogin(facebookProvider)}> */}
+
+            <button type="button" onClick={() => SignInWithGoogle()}>
+              <Icon name="google" /> <p>Google</p>
+              <style jsx>{`
+                button {
+                  border-radius: 30px;
+                  padding: 5px;
+                  margin-top: 16px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 100%;
+                  color: ${appConfig.theme.colors.primary["050"]};
+                  background-color: ${appConfig.theme.colors.primary["400"]};
+                  font-size: 30px;
+                  font-weight: 700;
+                }
+
+                button p {
+                  justify-content: center;
+                  align-items: center;
+                  margin-left: 16px;
+                }
+              `}</style>
+            </button>
+
+            <button type="button" onClick={() => SignInWithGithub()}>
+              <Icon name="github" /> <p>Github</p>
+              <style jsx>{`
+                button {
+                  border-radius: 30px;
+                  padding: 5px;
+                  margin-top: 16px;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  width: 100%;
+                  color: ${appConfig.theme.colors.neutrals["050"]};
+                  background-color: ${appConfig.theme.colors.neutrals["800"]};
+                  font-size: 30px;
+                  font-weight: 700;
+                }
+
+                button p {
+                  margin-left: 16px;
+                }
+              `}</style>
+            </button>
           </Box>
           {/* Formulário */}
 
@@ -234,7 +200,7 @@ export default function PaginaInicial() {
                 mainColorStrong: appConfig.theme.colors.primary[600],
               }}
               styleSheet={{
-                marginTop: "-32px",
+                marginTop: "16px",
                 marginBottom: "16px",
               }}
             />
@@ -289,7 +255,18 @@ export default function PaginaInicial() {
                 borderRadius: "1000px",
               }}
             >
-              Git repository
+              <a
+                target="blank"
+                href="https://github.com/hyagohoudini/discord-like-app"
+              >
+                Git repository
+                <style jsx>{`
+                  a {
+                    text-decoration: none;
+                    color: white;
+                  }
+                `}</style>
+              </a>
             </Text>
           </Box>
           {/* QRcode Area */}

@@ -6,13 +6,16 @@ import { useState } from "react";
 import Profile from "./profile";
 import { createClient } from "@supabase/supabase-js";
 
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzI4ODMyNCwiZXhwIjoxOTU4ODY0MzI0fQ.-Mph-QdVaozJZPBjqQWwjbEJdqoZWiUHtjE2vRKhbMI";
-const SUPABASE_URL = "https://iozweagevcivjyuunexw.supabase.co";
+import { useAuth } from "hooks/useAuth";
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function Message(prop) {
+  const { user } = useAuth();
+
   const flag = prop.flag;
   const [fakeDelete, setFakeDelete] = useState(false);
 
@@ -49,7 +52,11 @@ export default function Message(prop) {
         display: fakeDelete ? "none" : "flex",
         justifyContent: "left",
         alignItems: "center",
-        maxWidth: "50%",
+        maxWidth: {
+          md: '100%',
+          sm: '100%',
+          lg:"50%",
+        },
         maxHeight: "75vh",
         margin: flag ? "16px 0 16px auto" : "16px auto 16px 0",
         boxSizing: "border-box",
@@ -75,19 +82,22 @@ export default function Message(prop) {
               (t) => (
                 <Box
                   styleSheet={{
+                    width: "100%",
+                    height: "350px",
                     margin: "10px 16px 16px 16px",
                     boxSizing: "content-box",
                   }}
                 >
-                  <Profile username={prop.username} profilePic={prop.image}/>
+                  <Profile username={prop.username} profilePic={prop.image} />
                   <Button
                     onClick={() => toast.dismiss(t.id)}
                     variant="primary"
                     colorVariant="dark"
                     label="Close"
                     styleSheet={{
+                      marginTop: "16px",
                       width: "100%",
-                      height: "30%",
+                      height: "10%",
                       borderRadius: "30px",
                     }}
                   >
@@ -121,16 +131,20 @@ export default function Message(prop) {
       >
         <Box
           styleSheet={{
-            boxSizing: "content-box",
+            boxSizing: "border-box",
             justifyContent: "space-between",
             display: "flex",
           }}
         >
-          <Box>
+          <Box
+            styleSheet={{
+              display:"flex",
+            }}
+          >
             <Text
               styleSheet={{
                 marginLeft: "10px",
-                fontSize: "20px",
+                fontSize: "15px",
                 fontWeight: "700",
                 color: appConfig.theme.colors.neutrals["900"],
               }}

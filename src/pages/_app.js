@@ -1,4 +1,6 @@
+import { AuthContextProvider } from "context/AuthContext";
 import { Toaster } from "react-hot-toast";
+import { ChakraProvider } from "@chakra-ui/react";
 
 function GlobalStyle() {
   return (
@@ -33,14 +35,14 @@ function GlobalStyle() {
 
 export default function MyApp({ Component, pageProps }) {
   return (
-    <>
-      <GlobalStyle />
-      <Component {...pageProps} />
-      <Toaster
-        toastOptions={{
-          style: { fontSize: "1.2rem" },
-        }}
-      />
-    </>
+      <AuthContextProvider>
+        <GlobalStyle />
+        <Component {...pageProps} />
+        <Toaster
+          toastOptions={{
+            style: { fontSize: "1.2rem" },
+          }}
+        />
+      </AuthContextProvider>
   );
 }

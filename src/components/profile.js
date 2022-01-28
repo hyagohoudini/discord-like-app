@@ -6,7 +6,6 @@ export default function Profile(prop) {
     <>
       <Box
         styleSheet={{
-          marginLeft: "32px",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
