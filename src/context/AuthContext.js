@@ -35,7 +35,7 @@ export function AuthContextProvider(props) {
 
   async function SignIn(provider) {
     if (auth.currentUser) {
-      roteamento.push("/chat");
+      roteamento.push("/allChats");
       return;
     }
 
@@ -43,15 +43,10 @@ export function AuthContextProvider(props) {
       const result = await signInWithPopup(auth, provider);
       if (result.user) {
         const { displayName, photoURL } = user;
-
-        console.log(user);
-
         setUser({
           name: displayName,
           avatar: photoURL,
         });
-
-        console.log(user);
       }
     } catch (e) {
       toast.error("Login failure");
@@ -59,7 +54,7 @@ export function AuthContextProvider(props) {
       return;
     }
 
-    roteamento.push("/chat");
+    roteamento.push("/allChats");
   }
 
   function SignInWithGoogle() {
@@ -68,7 +63,7 @@ export function AuthContextProvider(props) {
 
   async function SignInWithGithub() {
     if (auth.currentUser) {
-      roteamento.push("/chat");
+      roteamento.push("/allChats");
       return;
     }
 
@@ -88,7 +83,7 @@ export function AuthContextProvider(props) {
       return;
     }
 
-    roteamento.push("/chat");
+    roteamento.push("/allChats");
   }
 
   async function ExitAccount() {

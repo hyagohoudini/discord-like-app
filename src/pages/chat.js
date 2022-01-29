@@ -8,6 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 
 import { useAuth } from "hooks/useAuth";
 import { useRouter } from "next/router";
+import { ButtonSendSticker } from "components/ButtonSendStickers";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -15,7 +16,9 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function ChatPage() {
-  const roteador = useRouter();
+  const roteamento = useRouter();
+  const id = roteamento.query.id;
+
   const [mensagem, setMensagem] = useState("");
   const [messageList, setMessageList] = useState([]);
   const [didMount, setDidMount] = useState(false);
@@ -25,11 +28,19 @@ export default function ChatPage() {
   useEffect(() => {
     supabaseClient
       .from("tb_messageList")
-      .select("*")
-      .order('id')
+      .select("id, created_at,from,message,profile_pic")
+      .match({ chat_id: id })
+      .order("id")
       .then(({ data }) => {
+        if (data === null) {
+          toast.error("Lista de mensagens esta vazia");
+          return;
+        }
         setMessageList(data);
         setDidMount(true);
+      })
+      .catch((e) => {
+        console.log(e);
       });
   }, []);
 
@@ -54,15 +65,19 @@ export default function ChatPage() {
       from: user.name,
       message: mensagem,
       profile_pic: user.avatar,
+      chat_id: id,
     };
 
     supabaseClient
       .from("tb_messageList")
       .insert([aux])
+      .match({ chat_id: id })
       .order("id", { ascending: false })
       .then(({ data }) => {
         setMessageList([...messageList, data[0]]);
-      }).catch((e)=>{
+      })
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -94,6 +109,31 @@ export default function ChatPage() {
       });
     }
   }, [messageList]);
+
+  const handleChange = (event) => {
+    setMensagem(event.target.value);
+  };
+
+  const handleNewMessage = (texto) => {
+    const aux = {
+      from: user.name,
+      message: texto,
+      profile_pic: user.avatar,
+      chat_id: id,
+    };
+
+    supabaseClient
+      .from("tb_messageList")
+      .insert([aux])
+      .match({ chat_id: id })
+      .order("id", { ascending: false })
+      .then(({ data }) => {
+        setMessageList([...messageList, data[0]]);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -177,13 +217,17 @@ export default function ChatPage() {
               alignItems: "center",
             }}
           >
+            <ButtonSendSticker
+              onStickerClick={(sticker) => {
+                handleNewMessage(":sticker: " + sticker);
+              }}
+            />
+
             <TextField
               placeholder="Type your message here..."
               value={mensagem}
               type="textarea"
-              onChange={(event) => {
-                setMensagem(event.target.value);
-              }}
+              onChange={handleChange}
               // fim onChange
               onKeyPress={(event) => {
                 if (event.key === "Enter") {
@@ -229,8 +273,8 @@ export default function ChatPage() {
 }
 
 function Header() {
-  const { ExitAccount } = useAuth();
-
+  const roteamento = useRouter();
+  const id = roteamento.query.id;
   return (
     <Box
       styleSheet={{
@@ -241,14 +285,12 @@ function Header() {
         justifyContent: "space-between",
       }}
     >
-      <Text variant="heading5">Chat</Text>
+      <Text variant="heading5">Chat {id}</Text>
       <Button
-        onClick={() => {
-          ExitAccount();
-        }}
+        href="/allChats"
         variant="secondary"
         colorVariant="negative"
-        label="Logout"
+        label="Return to All Chats"
       />
     </Box>
   );

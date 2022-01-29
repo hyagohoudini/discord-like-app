@@ -95,7 +95,8 @@ export default function HomePage() {
               tag="h5"
               variant="body5"
               styleSheet={{
-                marginBottom: "1px",
+                marginBottom: "0px",
+                marginTop: "16px",
                 marginRight: "auto",
                 color: appConfig.theme.colors.neutrals["300"],
               }}
@@ -105,53 +106,66 @@ export default function HomePage() {
 
             {/* <button onClick={() => handleLogin(facebookProvider)}> */}
 
-            <button type="button" onClick={() => SignInWithGoogle()}>
-              <Icon name="google" /> <p>Google</p>
-              <style jsx>{`
-                button {
-                  border-radius: 30px;
-                  padding: 5px;
-                  margin-top: 16px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  width: 100%;
-                  color: ${appConfig.theme.colors.primary["050"]};
-                  background-color: ${appConfig.theme.colors.primary["400"]};
-                  font-size: 30px;
-                  font-weight: 700;
-                }
+            <Box
+              styleSheet={{
+                display: "flex",
+                marginTop: 'auto',
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: { xs: "50%", sm: "100%",md:'90%' },
+              }}
+            >
+              <button type="button" onClick={() => SignInWithGoogle()}>
+                <Icon name="google" /> <p>Google</p>
+                <style jsx>{`
+                  button {
+                    border-radius: 30px;
+                    padding: 5px;
+                    margin-top: 16px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    color: ${appConfig.theme.colors.primary["050"]};
+                    background-color: ${appConfig.theme.colors.primary["400"]};
+                    font-size: 30px;
+                    font-weight: 700;
+                    cursor: pointer;
+                  }
 
-                button p {
-                  justify-content: center;
-                  align-items: center;
-                  margin-left: 16px;
-                }
-              `}</style>
-            </button>
+                  button p {
+                    justify-content: center;
+                    align-items: center;
+                    margin-left: 16px;
+                  }
+                `}</style>
+              </button>
 
-            <button type="button" onClick={() => SignInWithGithub()}>
-              <Icon name="github" /> <p>Github</p>
-              <style jsx>{`
-                button {
-                  border-radius: 30px;
-                  padding: 5px;
-                  margin-top: 16px;
-                  display: flex;
-                  justify-content: center;
-                  align-items: center;
-                  width: 100%;
-                  color: ${appConfig.theme.colors.neutrals["050"]};
-                  background-color: ${appConfig.theme.colors.neutrals["800"]};
-                  font-size: 30px;
-                  font-weight: 700;
-                }
+              <button type="button" onClick={() => SignInWithGithub()}>
+                <Icon name="github" /> <p>Github</p>
+                <style jsx>{`
+                  button {
+                    border-radius: 30px;
+                    padding: 5px;
+                    margin-top: 16px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    color: ${appConfig.theme.colors.neutrals["050"]};
+                    background-color: ${appConfig.theme.colors.neutrals["800"]};
+                    font-size: 30px;
+                    font-weight: 700;
+                    cursor: pointer;
+                  }
 
-                button p {
-                  margin-left: 16px;
-                }
-              `}</style>
-            </button>
+                  button p {
+                    margin-left: 16px;
+                  }
+                `}</style>
+              </button>
+            </Box>
           </Box>
           {/* Formulário */}
 
@@ -189,7 +203,7 @@ export default function HomePage() {
             </Text>
 
             <Button
-              label="Git Sign in"
+              label="Git Sign Up"
               variant="secondary"
               href="https://github.com/signup?source=login"
               fullWidth
@@ -206,7 +220,7 @@ export default function HomePage() {
             />
 
             <Button
-              label="Google Sign in"
+              label="Google Sign Up"
               variant="secondary"
               href="https://accounts.google.com/signup/v2/webcreateaccount?continue=https%3A%2F%2Faccounts.google.com%2FManageAccount%3Fnc%3D1&dsh=S939595820%3A1643303845417443&biz=false&flowName=GlifWebSignIn&flowEntry=SignUp"
               fullWidth

@@ -6,16 +6,12 @@ import { useState } from "react";
 import Profile from "./profile";
 import { createClient } from "@supabase/supabase-js";
 
-import { useAuth } from "hooks/useAuth";
-
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export default function Message(prop) {
-  const { user } = useAuth();
-
   const flag = prop.flag;
   const [fakeDelete, setFakeDelete] = useState(false);
 
@@ -53,13 +49,13 @@ export default function Message(prop) {
         justifyContent: "left",
         alignItems: "center",
         maxWidth: {
-          md: '100%',
-          sm: '100%',
-          lg:"50%",
+          md: "100%",
+          sm: "100%",
+          lg: "100%",
         },
         maxHeight: "75vh",
         margin: flag ? "16px 0 16px auto" : "16px auto 16px 0",
-        boxSizing: "border-box",
+        boxSizing: "content-box",
         backgroundColor: "rgba(82, 102, 122, 0.9)",
         boxShadow: "0 2px 10px 0 rgb(0 0 0 / 20%)",
         borderRadius: flag ? "30px 3px 30px 30px" : "3px 30px 30px 30px",
@@ -138,7 +134,7 @@ export default function Message(prop) {
         >
           <Box
             styleSheet={{
-              display:"flex",
+              display: "flex",
             }}
           >
             <Text
@@ -214,7 +210,16 @@ export default function Message(prop) {
                 fontSize: "16px",
               }}
             >
-              {prop.message}
+              {prop.message.startsWith(":sticker:") ? (
+                <Image
+                  src={prop.message.replace(":sticker:", "")}
+                  styleSheet={{
+                    maxWidth:'200px',
+                  }}
+                />
+              ) : (
+                prop.message
+              )}
             </Text>
           </Box>
         </CopyToClipboard>
