@@ -24,6 +24,7 @@ export function ButtonSendSticker(props) {
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: appConfig.theme.colors.neutrals[300],
+          marginRight:'16px',
           filter: isOpen ? "grayscale(0)" : "grayscale(1)",
           hover: {
             filter: "grayscale(0)",
@@ -85,6 +86,7 @@ export function ButtonSendSticker(props) {
                   width: "50%",
                   borderRadius: "5px",
                   padding: "10px",
+                  
                   focus: {
                     backgroundColor: appConfig.theme.colors.neutrals[600],
                   },
