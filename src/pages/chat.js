@@ -24,6 +24,15 @@ function realTimeChat(createNewMessage) {
     .subscribe();
 }
 
+function updateDeleteInRealTime(handleDeletedMessage){
+  return supabaseClient
+  .from('tb_messageList')
+  .on("DELETE", ({old})=>{
+      handleDeletedMessage(old.id);
+  })
+  
+}
+
 export default function ChatPage() {
   const roteamento = useRouter();
   const id = roteamento.query.id;
@@ -57,6 +66,13 @@ export default function ChatPage() {
           return [...currentChat, newMessage];
         });
       });
+
+      updateDeleteInRealTime((oldId)=>{
+        setMessageList((messageList)=>{
+            return messageList.filter((message)=>message.id!==oldId)
+        });
+    });
+    
   }, []);
 
   const handleSubmit = () => {
