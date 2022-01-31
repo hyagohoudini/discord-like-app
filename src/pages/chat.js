@@ -15,6 +15,15 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+function realTimeChat(createNewMessage) {
+  return supabaseClient
+    .from("tb_messageList")
+    .on("INSERT", (data) => {
+      createNewMessage(data.new);
+    })
+    .subscribe();
+}
+
 export default function ChatPage() {
   const roteamento = useRouter();
   const id = roteamento.query.id;
@@ -41,6 +50,12 @@ export default function ChatPage() {
       })
       .catch((e) => {
         console.log(e);
+      });
+
+      const subscription = realTimeChat((newMessage) => {
+        setMessageList((currentChat) => {
+          return [...currentChat, newMessage];
+        });
       });
   }, []);
 
@@ -74,7 +89,7 @@ export default function ChatPage() {
       .match({ chat_id: id })
       .order("id", { ascending: false })
       .then(({ data }) => {
-        setMessageList([...messageList, data[0]]);
+        // setMessageList([...messageList, data[0]]);
       })
       .catch((e) => {
         console.log(e);
@@ -128,7 +143,7 @@ export default function ChatPage() {
       .match({ chat_id: id })
       .order("id", { ascending: false })
       .then(({ data }) => {
-        setMessageList([...messageList, data[0]]);
+        // setMessageList([...messageList, data[0]]);
       })
       .catch((e) => {
         console.log(e);

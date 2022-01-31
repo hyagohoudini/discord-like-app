@@ -12,6 +12,15 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+function realTimeChatsList(createNewChat) {
+  return supabaseClient
+    .from("tb_chat")
+    .on("*", (data) => {
+      createNewChat(data.new);
+    })
+    .subscribe();
+}
+
 export default function AllChats() {
   const { user, ExitAccount } = useAuth();
   const [chatList, setChatList] = useState([]);
@@ -29,6 +38,17 @@ export default function AllChats() {
         setChatList(data);
         setDidMount(true);
       });
+
+    const subscription = realTimeChatsList((newChat) => {
+      setChatList((currentChatList) => {
+        return [...currentChatList, newChat];
+      });
+      setDidMount(true);
+    });
+
+    // return () => {
+    //   subscription.unsubscribe();
+    // };
   }, []);
 
   const createNewChat = () => {
@@ -49,7 +69,7 @@ export default function AllChats() {
       .from("tb_chat")
       .insert([aux])
       .then(({ data }) => {
-        setChatList([...chatList, data[0]]);
+        // setChatList([...chatList, data[0]]);
         toast.success("Chat created!");
       })
       .catch((e) => {
@@ -102,9 +122,9 @@ export default function AllChats() {
                 tag="h1"
                 styleSheet={{
                   marginBottom: "16px",
-                  marginTop:'auto',
-                  fontSize:'30px',
-                  color: appConfig.theme.colors.primary['050'],
+                  marginTop: "auto",
+                  fontSize: "30px",
+                  color: appConfig.theme.colors.primary["050"],
                 }}
               >
                 Select a chat room to start a conversation
