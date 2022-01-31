@@ -54,14 +54,19 @@ export default function AllChats() {
   }, []);
 
   const createNewChat = () => {
-    if (backgroundPhoto.length === 0) {
-      toast.error("Empty Image URL!");
+    if (backgroundPhoto.length === 0 || user.name === undefined) {
+      toast.error("Please, reload the page!");
       return;
     }
     mandaProBack();
   };
 
   const mandaProBack = () => {
+    if(chatList.filter((chat)=>chat.creator_pic===user.avatar).length != 0){
+      toast.error('Only one chat room per User');
+      return;
+    }
+
     const aux = {
       background: backgroundPhoto,
       creator_pic: user.avatar,
@@ -72,7 +77,7 @@ export default function AllChats() {
       .insert([aux])
       .then(({ data }) => {
         // setChatList([...chatList, data[0]]);
-        toast.success("Chat created!");
+        toast.success("Chat created, reload the page!");
       })
       .catch((e) => {
         toast.error("Only one chat per user!");

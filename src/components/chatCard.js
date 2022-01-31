@@ -65,6 +65,10 @@ export default function ChatCard(props) {
         colorVariant="positive"
         label={id}
         onClick={() => {
+          if (user.name === undefined) {
+            toast.error("Please, reload the page!");
+            return;
+          }
           roteamento.push(`/chat?id=${id}`);
         }}
         styleSheet={{
