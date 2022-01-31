@@ -2,6 +2,7 @@ import { Box, Button, Icon, Text } from "@skynexui/components";
 import { createClient } from "@supabase/supabase-js";
 import ChatCard from "components/chatCard";
 import { useAuth } from "hooks/useAuth";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -23,6 +24,7 @@ function realTimeChatsList(createNewChat) {
 
 export default function AllChats() {
   const { user, ExitAccount } = useAuth();
+
   const [chatList, setChatList] = useState([]);
   const [didMount, setDidMount] = useState();
   const [backgroundPhoto, setBackgroundPhoto] = useState(
@@ -118,6 +120,17 @@ export default function AllChats() {
             }}
           >
             <Box>
+              <Text
+                tag="h1"
+                styleSheet={{
+                  marginBottom: "16px",
+                  marginTop: "auto",
+                  fontSize: "15px",
+                  color: appConfig.theme.colors.primary["050"],
+                }}
+              >
+                ⚠️ Issue: Reload this page before joining a chat room
+              </Text>
               <Text
                 tag="h1"
                 styleSheet={{
